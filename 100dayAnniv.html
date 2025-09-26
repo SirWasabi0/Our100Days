@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Our 100 Days 💕</title>
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Patrick Hand', cursive;
+      color: #222;
+      overflow-x: hidden;
+    }
+
+    h1, h2 {
+      text-align: center;
+      margin-top: 0;
+    }
+
+    button {
+      padding: 10px 20px;
+      background: white;
+      border: 2px solid #000;
+      border-radius: 6px;
+      font-family: 'Patrick Hand', cursive;
+      font-size: 1.1rem;
+      cursor: pointer;
+      box-shadow: 2px 2px 0px #000;
+      transition: transform 0.1s ease;
+    }
+    button:hover {
+      transform: scale(1.05);
+    }
+
+    /* Login */
+    #login-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: repeating-linear-gradient(
+        to bottom,
+        #fff,
+        #fff 28px,
+        #dcdcdc 29px
+      );
+    }
+
+    #login-box {
+      background: white;
+      padding: 30px;
+      border: 2px solid black;
+      border-radius: 8px;
+      box-shadow: 4px 4px 0px #000;
+      text-align: center;
+    }
+
+    #login-box input {
+      display: block;
+      margin: 10px auto;
+      padding: 10px;
+      width: 200px;
+      border: 2px solid black;
+      border-radius: 6px;
+      font-family: 'Patrick Hand', cursive;
+      font-size: 1rem;
+    }
+
+    #error-msg {
+      color: red;
+      margin-top: 10px;
+    }
+
+    /* Home page */
+    #home {
+      display: none;
+      min-height: 100vh;
+      color: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+
+      /* Background image */
+      background: url("Gemini_Generated_Image_5i33el5i33el5i33.png") no-repeat center top fixed;
+      background-size: contain;
+    }
+
+    /* Timeline/Storybook Page */
+    #timeline-story {
+      display: none;
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      background: repeating-linear-gradient(
+        to bottom,
+        #fff,
+        #fff 28px,
+        #dcdcdc 29px
+      );
+      position: relative;
+    }
+
+    #timeline-story img {
+      max-width: 100%;
+      border: 2px solid black;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      box-shadow: 2px 2px 0px #000;
+    }
+
+    #timeline-story p {
+      font-size: 1.3rem;
+      line-height: 1.5;
+      margin-bottom: 60px;
+    }
+
+    /* Navigation Buttons in Timeline */
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: auto;
+    }
+
+    .nav-buttons button {
+      margin: 0 5px;
+    }
+
+    /* Add Entry Page */
+    #add {
+      display: none;
+      text-align: center;
+      padding: 30px;
+      background: repeating-linear-gradient(
+        to bottom,
+        #fff,
+        #fff 28px,
+        #dcdcdc 29px
+      );
+    }
+
+    #add input, #add textarea {
+      display: block;
+      margin: 10px auto;
+      padding: 10px;
+      width: 80%;
+      border: 2px solid black;
+      border-radius: 6px;
+      font-family: 'Patrick Hand', cursive;
+      font-size: 1rem;
+      box-shadow: 2px 2px 0px #000;
+    }
+  </style>
+</head>
+<body>
+  <!-- Login Screen -->
+  <div id="login-container">
+    <div id="login-box">
+      <h2>Whart</h2>
+      <input type="text" id="username" placeholder="Username">
+      <input type="password" id="password" placeholder="Password">
+      <button onclick="login()">Enter</button>
+      <p id="error-msg"></p>
+    </div>
+  </div>
+
+  <!-- Home Page -->
+  <div id="home">
+    <button id="view-timeline" onclick="showTimelinePage()">📜 View Timeline</button>
+    <button onclick="showPage('add')">➕ Add Timeline</button>
+    <button onclick="logout()">🔙 Logout</button>
+  </div>
+
+  <!-- Timeline/Storybook Page -->
+  <div id="timeline-story">
+    <img id="timeline-image" src="" alt="Timeline Image">
+    <p id="timeline-text"></p>
+    <div class="nav-buttons">
+      <button id="prev-btn" onclick="prevTimeline()">⬅️ Flip Back</button>
+      <button id="next-btn" onclick="nextTimeline()">➡️ Next Page</button>
+      <button id="home-btn" onclick="goHome()">🏠 Go Home</button>
+    </div>
+  </div>
+
+  <!-- Add Entry Page -->
+  <div id="add">
+    <h2>Add a New Memory ✨</h2>
+    <input type="text" id="day" placeholder="Day (e.g., Day 101)">
+    <textarea id="caption" placeholder="Write your memory..."></textarea>
+    <input type="text" id="image" placeholder="Image URL (optional, use .jpg)">
+    <button onclick="addEntry()">Add</button>
+    <button onclick="showPage('home')">🏠 Back Home</button>
+  </div>
+
+  <script>
+    // Timeline entries (24 days)
+    let timelineEntries = [
+      {day: "Day 1", text: "Where we first met \nPoor nuku was just looking for someone to share the misery of completing the mq with. He met poor renene.", img: "1.jpg"},
+      {day: "Day...", text: "Our first pictures shared (rene) \nRene went out drinking with her friend . She looks preety AS USUAL !! (she used a look older filter here).", img: "2.jpg"},
+      {day: "Day...", text: "Our first pictures shared (nuku) \nNuku i dont even know why you sent this . You look better on your addhar card smh, Rene you should delete this abomination from your phone pls.", img: "3.jpg"},
+      {day: "Day ...", text: "Our first (kinda) Video call \nDonut have any screenies from the first video call cuz these two were too nervous and forgor (Nuku still refuses to believe Rene was nervous) ", img: "4.jpg"},
+      {day: "Day ...", text: "Baby Rene \nShawty was an alcoholic from day1", img: "5.jpg"},
+      {day: "Day ...", text: "Baby Nuku \nNuku never wiped the booger cuz he never let shit bother him", img: "6.jpg"},
+      {day: "June 11th", text: "First Pin it \nRene wooing Nuku (is he gonna fall for it?) ", img: "7.jpg"},
+      {day: "June 11th", text: "FIrst Pin it \nHe did", img: "8.jpg"},
+      {day: "June 15th", text: "Honorable mentions (Pin it) \nRene still trying to woo Nuku ", img: "9.jpg"},
+      {day: "June 15th", text: "Honorable mentions (Pin it) \nNuku wooing back but with swag (He was soo proud of the burger)", img: "10.jpg"},
+      {day: "July 21st", text: "Honorable mentions (Pin it) \nRene cant help it with the adventure time references. Nuku thought she drew the lore accruate Prismo ", img: "11.jpg"},
+      {day: "July 21st", text: "Honorable mentions (Pin it) \nNuku has such a way with words honestly .No wonder cute Rene was drawn him", img: "12.jpg"},
+      {day: "August 1st", text: "Nuku posted his first instagram story \nRene had the privilege of being on Nukus first instagram story", img: "13.jpg"},
+      {day: "Time skip", text: "TIME SKIP", img: "14.jpg"},
+      {day: "September 7th", text: "First Date Night \nRene finally came to bangalore. They went to Mykos Meekos ,Pretty good First date night if you ask me", img: "15.jpg"},
+      {day: "September 7th", text: "Food \nThey got beer , salmon sushi or something and muttongoat pizza thingy (Rene should remember) .", img: "16.jpg"},
+      {day: "September 7th", text: "Nuku\'s Favourite picture from the date night", img: "17.jpg"},
+      {day: "September 7th", text: "EEEE Hand holding , Such lewd activities", img: "18.jpg"},
+      {day: "September 8th", text: "2nd Date \nClaytopiaaa , pretty fun. Nuku got cute Rene a kuromi plushie after which he installed cameras in it\'s eyes later on before Rene left bangalore", img: "19.jpg"},
+      {day: "September 8th", text: "Photo booth Pics \nThey look soo cute together, they should just get married honestly", img: "20.jpg"},
+      
+    ];
+
+    let currentTimelineIndex = 0;
+
+    // Initially hide nav buttons
+    document.getElementById('prev-btn').style.display = 'none';
+    document.getElementById('next-btn').style.display = 'none';
+    document.getElementById('home-btn').style.display = 'none';
+
+    function login() {
+      const user = document.getElementById('username').value.toLowerCase();
+      const pass = document.getElementById('password').value;
+      if ((user === "nuku" || user === "rene") && pass === "poopy") {
+        document.getElementById('login-container').style.display = "none";
+        document.getElementById('home').style.display = "flex";
+      } else {
+        document.getElementById('error-msg').innerText = "Invalid username or password ❌";
+      }
+    }
+
+    function logout() {
+      document.getElementById('home').style.display = "none";
+      document.getElementById('timeline-story').style.display = "none";
+      document.getElementById('add').style.display = "none";
+      document.getElementById('login-container').style.display = "flex";
+      currentTimelineIndex = 0;
+    }
+
+    function showPage(page) {
+      document.getElementById('home').style.display = "none";
+      document.getElementById('timeline-story').style.display = "none";
+      document.getElementById('add').style.display = "none";
+
+      if(page === 'timeline-story'){
+        showTimelinePage();
+      } else {
+        document.getElementById(page).style.display = "block";
+      }
+    }
+
+    function showTimelinePage() {
+      currentTimelineIndex = 0;
+      showTimeline(currentTimelineIndex);
+      document.getElementById('timeline-story').style.display = "flex";
+
+      // Show nav buttons
+      document.getElementById('prev-btn').style.display = 'none';
+      document.getElementById('next-btn').style.display = timelineEntries.length > 1 ? 'inline-block' : 'none';
+      document.getElementById('home-btn').style.display = 'inline-block';
+
+      document.getElementById('home').style.display = "none";
+    }
+
+    function showTimeline(index) {
+      const entry = timelineEntries[index];
+      document.getElementById('timeline-image').src = entry.img;
+      document.getElementById('timeline-text').innerText = `${entry.day}: ${entry.text}`;
+
+      // Toggle buttons
+      document.getElementById('prev-btn').style.display = index === 0 ? 'none' : 'inline-block';
+      document.getElementById('next-btn').style.display = index === timelineEntries.length -1 ? 'none' : 'inline-block';
+    }
+
+    function nextTimeline() {
+      if(currentTimelineIndex < timelineEntries.length -1){
+        currentTimelineIndex++;
+        showTimeline(currentTimelineIndex);
+      }
+    }
+
+    function prevTimeline() {
+      if(currentTimelineIndex > 0){
+        currentTimelineIndex--;
+        showTimeline(currentTimelineIndex);
+      }
+    }
+
+    function goHome() {
+      document.getElementById('timeline-story').style.display = "none";
+      document.getElementById('home').style.display = "flex";
+
+      // Hide timeline nav buttons when back on home
+      document.getElementById('prev-btn').style.display = 'none';
+      document.getElementById('next-btn').style.display = 'none';
+      document.getElementById('home-btn').style.display = 'none';
+    }
+
+    function addEntry() {
+      const day = document.getElementById('day').value;
+      const caption = document.getElementById('caption').value;
+      const image = document.getElementById('image').value;
+
+      if(day && caption){
+        timelineEntries.push({
+          day: day,
+          text: caption,
+          img: image || ""
+        });
+        document.getElementById('day').value = "";
+        document.getElementById('caption').value = "";
+        document.getElementById('image').value = "";
+        alert("Memory added successfully!");
+        showPage('home');
+      }
+    }
+  </script>
+</body>
+</html>
